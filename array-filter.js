@@ -21,7 +21,7 @@
 
 
 Array.prototype.MyFilter = function(callback, thisArg) {
-  if (this == null) {
+  if (this == undefined) {
     throw new TypeError('this is null or undifined')
   }
   if (typeof callback !== 'function') {
