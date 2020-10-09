@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div contenteditable="true"></div>
+    <script>
+      class Element {
+        constructor(tagName, ...args) {
+          this.tagName = tagName;
+          // 判断是否还有子元素
+          console.log('----s---')
+          console.log(args)
+          console.log('args[0]', args[0])
+          console.log(Array.isArray(args[0]))
+          console.log('----e---')
+          if (Array.isArray(args[0])) {
+            this.props = {};
+            this.childern = args[0];
+          } else {
+            this.props = args[0];
+            this.childern = args[1];
+          }
+          this.key = this.props.key || void 0;
+        }
+
+        render() {
+          // 创建一个元素
+          const $dom = document.createElement(this.tagName);
+          // 给元素加上属性
+          for (const proKey in this.props) {
+            $dom.setAttribute(proKey, this.props[proKey]);
+          }
+          // 如果存在字节点
+          if (this.childern) {
+            this.childern.forEach((child) => {
+              // 如果子元素包含子元素，递归
+              if (child instanceof Element) {
+                $dom.appendChild(child.render());
+              } else {
+                $dom.appendChild(document.createTextNode(child));
+              }
+            });
+          }
+          return $dom;
+        }
+      }
+      (function () {
+        const tree = new Element("div", { classname: "div" }, [
+          new Element("h1", { style: "color: red;" }, [
+            "Hello, This is my Vdom library",
+          ]),
+          new Element("ul", [
+            new Element("li", ["1111"]),
+            new Element("li", ["2222"]),
+          ]),
+        ]);
+        const $dom = tree.render();
+        console.log(111, $dom);
+        document.body.appendChild($dom)
+      })();
+    </script>
+  </body>
+</html>
